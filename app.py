@@ -3,7 +3,6 @@ from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 import streamlit as st
 import os
-import requests
 from dotenv import load_dotenv
 
 # Load .env file
@@ -25,47 +24,23 @@ prompt = st.text_area(
     placeholder="Paste your code here...",
 )
 
-# Process user input (Using Code Roast API)
+# Process user input
+llm = OpenAI(temperature=0.7, openai_api_key=os.getenv('OPENAI_API_KEY'))
+
+# Roast Statement
+statement = str(os.getenv('STATEMENT'))
+
+prompt_template = PromptTemplate(
+    input_variables=['code'],
+    template= '{statement} {code}'
+)
+
+chain = LLMChain(llm=llm, prompt=prompt_template)
+
 if prompt:
     with st.spinner("Roasting your code..."):
         try:
-            # API Endpoint
-            api_url = os.getenv('CODE_ROAST_API')
-
-            # API request payload
-            payload = {"code": prompt}
-
-            # Make POST request
-            response = requests.post(api_url, json=payload)
-            response_data = response.json()
-
-            # Display result
-            if response.status_code == 200 and "result" in response_data:
-                #st.success("Here's your roasted code:")
-                st.markdown(f"{response_data['result']}")
-            else:
-                st.error("Failed to roast your code. Please try again.")
+            response = chain.run(code=prompt)
+            st.write(response)
         except Exception as e:
             st.error(f"An error occurred")
-
-
-# ---------------------------------------------------------------------
-
-
-# Process user input (Using Open AI API)
-# llm = OpenAI(temperature=0.7, openai_api_key=os.getenv('OPENAI_API_KEY'))
-
-# prompt_template = PromptTemplate(
-#     input_variables=['code'],
-#     template='Roast this code: {code}'
-# )
-
-# chain = LLMChain(llm=llm, prompt=prompt_template)
-
-# if prompt:
-#     with st.spinner("Roasting your code..."):
-#         try:
-#             response = chain.run(code=prompt)
-#             st.write(response)
-#         except Exception as e:
-#             st.error(f"An error occurred")
