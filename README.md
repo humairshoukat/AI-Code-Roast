@@ -1,5 +1,5 @@
 # AI-Code-Roast
-Get your code roasted by AI and learn how to write better code. Built using Python, LangChain, Open AI, and Streamlit. Try it: https://aicoderoast.streamlit.app/
+Get your code roasted by AI and learn how to write better code. Built using Python, LangChain, Open AI, and Streamlit. Try it: [https://ai-code-roast.streamlit.app/](https://ai-code-roast.streamlit.app/)
 
 ![alt text](image.png)
 
